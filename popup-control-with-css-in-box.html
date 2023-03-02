@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pop-up Control with CSS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 15px;
+      background-color: #fff;
+    }
+
+    .d-point-wr {
+      position: relative;
+      padding-bottom: 500px;
+    }
+
+    .d-point-cr {
+      overflow: scroll;
+      width: 100%;
+      height: 300px;
+      border: 2px solid #f5f5f5;
+      background-color: #fafafa;
+    }
+
+    .d-point {
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      /* position: relative; */
+      width: 100%;
+      height: 75px;
+      background-color: #f5f5f5;
+      padding: 15px 10px 15px 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    .d-radio {
+      font-size: 1em;
+      width: 20px;
+      height: 20px;
+      margin: 0 8px 0 0;
+      cursor: pointer;
+    }
+
+    .d-point-name {
+      font-size: 1.15em;
+      padding-top: 2px;
+      padding-right: 10px;
+    }
+
+    .d-point-info {
+      margin-left: auto;
+      width: 35px;
+      height: 35px;
+    }
+
+    .d-check {
+      width: 35px;
+      height: 35px;
+      margin: 0;
+      padding: 0;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .d-check:checked {
+      position: fixed;
+      display: block;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .i-info {
+      display: block;
+      width: 24px;
+      height: 24px;
+      margin-top: -34px;
+      margin-left: 10px;
+      color: rgb(255, 178, 0);
+      font-size: 1.5em;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .d-check:checked+.i-info {
+      margin-top: 0;
+    }
+
+    .d-check:checked+.i-info::after {
+      display: block;
+      position: fixed;
+      content: "";
+      background-color: rgba(0, 0, 0, 0.25);
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      cursor: default;
+      z-index: 99;
+      pointer-events: none;
+    }
+
+    .d-popup {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 0;
+      z-index: 101;
+      padding-bottom: 50px;
+      pointer-events: none;
+    }
+
+    .p-wr {
+      position: relative;
+      width: 250px;
+      padding: 20px;
+      color: #111;
+      background-color: #fff;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+      border-radius: 5px;
+      font-size: 14px;
+      line-height: 1.2em;
+    }
+
+    .d-check:checked+.i-info+.d-popup {
+      display: block;
+    }
+
+    .i-close {
+      position: absolute;
+      right: 10px;
+      top: 6px;
+      font-size: 1.5em;
+      text-align: center;
+      opacity: .3;
+    }
+
+    .d-name {
+      font-size: 1.25em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .c-label,
+    .w-label {
+      opacity: .8;
+      margin-bottom: 4px;
+    }
+
+    .w-label {
+      margin-top: 15px;
+    }
+
+    .c-name {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .b-map {
+      display: inline-block;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      padding: 10px 12px;
+      background: #F5F5F5;
+      border: 1px solid #666666;
+      border-radius: 3px;
+      text-decoration: none;
+      color: #444;
+      pointer-events: all;
+    }
+
+    .b-map i {
+      margin-left: 8px;
+      font-size: 1.25em;
+    }
+
+    .desc-1,
+    .desc-2 {
+      font-size: 0.9em;
+      opacity: .9;
+    }
+
+    .desc-2 {
+      margin-top: 10px;
+    }
+
+    .c-label::before {
+      content: "Kurum Adı:";
+    }
+
+    .w-label::before {
+      content: "Çalışma Saatleri:";
+    }
+
+    .b-map::before {
+      content: "Haritada Göster";
+    }
+
+    .desc-1::before {
+      content: "Paketiniz Teslim Noktasına ulaştığında SMS ve e-posta yoluyla QR kodlu teslim kartı bilgileri gönderilir.";
+    }
+
+    .desc-2::before {
+      content: "Teslim Noktasındaki görevli personele QR kodunuzu göstererek siparişinizi hızlıca teslim alabilirsiniz.";
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="d-point-wr">
+    <div class="d-point-cr">
+      <div class="d-point">
+        <input class="d-radio" id="radio-1" type="radio">
+        <label class="d-point-name" for="radio-1">Ankara Teslim Noktası</label>
+        <div class="d-point-info">
+          <input class="d-check" type="checkbox">
+          <i class="i-info fa fa-info-circle"></i>
+          <div class="d-popup">
+            <div class="p-wr">
+              <i class="i-close fa fa-times"></i>
+              <div class="d-name">Ankara Teslim Noktası</div>
+              <div class="c-label"></div>
+              <div class="c-name">Sıla Kafe</div>
+              <div>19 Mayıs Mahallesi Osmaniye caddesi 70.Sokak No: 2/B İlkadım/ANKARA</div>
+              <div class="w-label"></div>
+              <div>Hafta içi: 10:00-18:30</div>
+              <div>Cumartesi: 10:00-18:30</div>
+              <div>Pazar: 10:00-18:30</div>
+              <a class="b-map" href="https://g.page/silabilgisayar?share" target="_blank"><i class="fa fa-map-location-dot"></i></a>
+              <div class="desc-1"></div>
+              <div class="desc-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-point">
+        <input class="d-radio" id="radio-2" type="radio">
+        <label class="d-point-name" for="radio-2">İzmir Teslim Noktası</label>
+        <div class="d-point-info">
+          <input class="d-check" type="checkbox">
+          <i class="i-info fa fa-info-circle"></i>
+          <div class="d-popup">
+            <div class="p-wr">
+              <i class="i-close fa fa-times"></i>
+              <div class="d-name">İzmir Teslim Noktası</div>
+              <div class="c-label"></div>
+              <div class="c-name">Sıla Bilgisayar</div>
+              <div>19 Mayıs Mahallesi Osmaniye caddesi 70.Sokak No: 2/B İlkadım/İzmir</div>
+              <div class="w-label"></div>
+              <div>Hafta içi: 10:00-18:30</div>
+              <div>Cumartesi: 10:00-18:30</div>
+              <div>Pazar: 10:00-18:30</div>
+              <a class="b-map" href="https://g.page/silabilgisayar?share" target="_blank"><i class="fa fa-map-location-dot"></i></a>
+              <div class="desc-1"></div>
+              <div class="desc-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-point">
+        <input class="d-radio" id="radio-3" type="radio">
+        <label class="d-point-name" for="radio-3">Samsun Teslim Noktası</label>
+        <div class="d-point-info">
+          <input class="d-check" type="checkbox">
+          <i class="i-info fa fa-info-circle"></i>
+          <div class="d-popup">
+            <div class="p-wr">
+              <i class="i-close fa fa-times"></i>
+              <div class="d-name">Samsun Teslim Noktası</div>
+              <div class="c-label"></div>
+              <div class="c-name">Sıla Bilgisayar</div>
+              <div>19 Mayıs Mahallesi Osmaniye caddesi 70.Sokak No: 2/B İlkadım/SAMSUN</div>
+              <div class="w-label"></div>
+              <div>Hafta içi: 10:00-18:30</div>
+              <div>Cumartesi: 10:00-18:30</div>
+              <div>Pazar: 10:00-18:30</div>
+              <a class="b-map" href="https://g.page/silabilgisayar?share" target="_blank"><i class="fa fa-map-location-dot"></i></a>
+              <div class="desc-1"></div>
+              <div class="desc-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-point">
+        <input class="d-radio" id="radio-4" type="radio">
+        <label class="d-point-name" for="radio-4">Zonguldak Teslim Noktası</label>
+        <div class="d-point-info">
+          <input class="d-check" type="checkbox">
+          <i class="i-info fa fa-info-circle"></i>
+          <div class="d-popup">
+            <div class="p-wr">
+              <i class="i-close fa fa-times"></i>
+              <div class="d-name">Zonguldak Teslim Noktası</div>
+              <div class="c-label"></div>
+              <div class="c-name">Sıla Bilgisayar</div>
+              <div>19 Mayıs Mahallesi Osmaniye caddesi 70.Sokak No: 2/B İlkadım/Zonguldak</div>
+              <div class="w-label"></div>
+              <div>Hafta içi: 10:00-18:30</div>
+              <div>Cumartesi: 10:00-18:30</div>
+              <div>Pazar: 10:00-18:30</div>
+              <a class="b-map" href="https://g.page/silabilgisayar?share" target="_blank"><i class="fa fa-map-location-dot"></i></a>
+              <div class="desc-1"></div>
+              <div class="desc-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+
+</html>
